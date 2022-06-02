@@ -1,14 +1,14 @@
 import { Typography } from '@mui/material';
-import Image from 'next/image';
+import Head from 'next/head';
 
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Sanity Amazona</title>
         <meta
           name="description"
-          content="The ecommerce website by next and sanity."
+          content="The ecommerce website by next and sanity"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
