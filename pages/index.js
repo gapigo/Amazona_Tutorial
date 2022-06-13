@@ -1,13 +1,13 @@
 import { Alert, CircularProgress, Grid, Typography } from '@mui/material';
-import { useEffect, useState, useContext } from 'react';
-import Layout from '../components/Layout';
-import client from '../utils/client';
-import ProductItem from '../components/ProductItem';
-import { Store } from '../utils/store';
 import axios from 'axios';
-import { urlForThumbnail } from '../utils/image';
-import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import { useContext, useEffect, useState } from 'react';
+import Layout from '../components/Layout';
+import ProductItem from '../components/ProductItem';
+import client from '../utils/client';
+import { urlForThumbnail } from '../utils/image';
+import { Store } from '../utils/store';
 
 export default function Home() {
   const {
@@ -16,13 +16,13 @@ export default function Home() {
   } = useContext(Store);
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-
   const [state, setState] = useState({
     products: [],
-    erorr: '',
+    error: '',
     loading: true,
   });
   const { loading, error, products } = state;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
