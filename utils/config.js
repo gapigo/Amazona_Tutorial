@@ -1,5 +1,5 @@
 const config = {
-  productId: 'hjzw2rh2',
+  projectId: 'hjzw2rh2',
   dataset: 'production',
 };
 
