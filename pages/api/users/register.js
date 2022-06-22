@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import axios from 'axios';
 import config from '../../../utils/config';
 import { signToken } from '../../../utils/auth';
+import client from '../../../utils/client';
 
 const handler = nc();
 
@@ -22,6 +23,16 @@ handler.post(async (req, res) => {
       },
     },
   ];
+  const existUser = await client.fetch(
+    `*[_type == "user" && email == $email][0]`,
+    {
+      email: req.body.email,
+    }
+  );
+
+  if (existUser) {
+    return res.status(401).send({ message: 'Email already exists' });
+  }
   // AJAX request
   const { data } = await axios.post(
     `https://${projectId}.api.sanity.io/v1/data/mutate/${dataset}?returnIds=true`,

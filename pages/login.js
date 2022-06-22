@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import Form from '../components/Form';
 import Layout from '../components/Layout';
+import { useForm, Controller } from 'react-hook-form';
+import NextLink from 'next/link';
+import Form from '../components/Form';
 import {
   Button,
   Link,
@@ -10,11 +11,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import NextLink from 'next/link';
 import { useSnackbar } from 'notistack';
-import { Store } from '@mui/icons-material';
+import axios from 'axios';
+import { Store } from '../utils/store';
 import { useRouter } from 'next/router';
-import { jsCookie } from 'js-cookie';
+import jsCookie from 'js-cookie';
 
 export default function LoginScreen() {
   const { state, dispatch } = useContext(Store);
@@ -25,7 +26,6 @@ export default function LoginScreen() {
       router.push('/');
     }
   }, [router, userInfo]);
-
   const {
     handleSubmit,
     control,
@@ -35,7 +35,7 @@ export default function LoginScreen() {
   const { enqueueSnackbar } = useSnackbar();
   const submitHandler = async ({ email, password }) => {
     try {
-      const { data } = await axios.post('/api/users/register', {
+      const { data } = await axios.post('/api/users/login', {
         email,
         password,
       });
@@ -43,7 +43,7 @@ export default function LoginScreen() {
       jsCookie.set('userInfo', JSON.stringify(data));
       router.push('/');
     } catch (err) {
-      enqueueSnackbar(err.message, { variant: 'error' });
+      enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
   return (
@@ -117,7 +117,7 @@ export default function LoginScreen() {
             </Button>
           </ListItem>
           <ListItem>
-            Do not have an account{' '}
+            Do not have an account?{' '}
             <NextLink href={'/register'} passHref>
               <Link>Register</Link>
             </NextLink>
@@ -127,5 +127,3 @@ export default function LoginScreen() {
     </Layout>
   );
 }
-
-// export default Login;
