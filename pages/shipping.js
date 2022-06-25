@@ -1,15 +1,14 @@
 import { Button, List, ListItem, TextField, Typography } from '@mui/material';
-import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
 import CheckoutWizard from '../components/CheckoutWizard';
-import Form from '../components/Form';
 import Layout from '../components/Layout';
-import user from '../sanity/schemas/user';
+import Form from '../components/Form';
+import { Controller, useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import { Store } from '../utils/store';
 import jsCookie from 'js-cookie';
 
-function Shipping() {
+export default function ShippingScreen() {
   const {
     handleSubmit,
     control,
@@ -22,18 +21,16 @@ function Shipping() {
     userInfo,
     cart: { shippingAddress },
   } = state;
-
   useEffect(() => {
-    if (!user.info) {
-      return router.push('/login?redirect=/shipping');
+    if (!userInfo) {
+      router.push('/login?redirect=/shipping');
     }
     setValue('fullName', shippingAddress.fullName);
     setValue('address', shippingAddress.address);
     setValue('city', shippingAddress.city);
     setValue('postalCode', shippingAddress.postalCode);
     setValue('country', shippingAddress.country);
-  }, [router, setValue, shippingAddress, userInfo]);
-
+  }, [router, userInfo, setValue, router]);
   const submitHandler = ({ fullName, address, city, postalCode, country }) => {
     dispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
@@ -52,11 +49,11 @@ function Shipping() {
     router.push('/payment');
   };
   return (
-    <Layout title="Shipping address">
+    <Layout title="Shipping Address">
       <CheckoutWizard activeStep={1}></CheckoutWizard>
       <Form onSubmit={handleSubmit(submitHandler)}>
         <Typography component="h1" variant="h1">
-          Shipping address
+          Shipping Address
         </Typography>
         <List>
           <ListItem>
@@ -165,7 +162,7 @@ function Shipping() {
                   error={Boolean(errors.postalCode)}
                   helperText={
                     errors.postalCode
-                      ? errors.fullName.type === 'minLength'
+                      ? errors.postalCode.type === 'minLength'
                         ? 'Postal Code length is more than 1'
                         : 'Postal Code is required'
                       : ''
@@ -188,7 +185,7 @@ function Shipping() {
                 <TextField
                   variant="outlined"
                   fullWidth
-                  id="country"
+                  id="postalCode"
                   label="Country"
                   inputProps={{ type: 'country' }}
                   error={Boolean(errors.country)}
@@ -214,5 +211,3 @@ function Shipping() {
     </Layout>
   );
 }
-
-export default shipping;
