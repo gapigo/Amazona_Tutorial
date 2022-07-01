@@ -1,31 +1,32 @@
 import {
   Button,
   Card,
-  Image,
+  CircularProgress,
   Grid,
+  Link,
   List,
   ListItem,
+  Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
   Typography,
-  CircularProgress,
 } from '@mui/material';
-import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/Layout';
 import classes from '../utils/class';
+import { Store } from '../utils/store';
 import { useSnackbar } from 'notistack';
 import { getError } from '../utils/error';
 import axios from 'axios';
 import jsCookie from 'js-cookie';
 import dynamic from 'next/dynamic';
-import { Store } from '../utils/store';
 
 function PlaceOrderScreen() {
   const { enqueueSnackbar } = useSnackbar();
@@ -36,7 +37,7 @@ function PlaceOrderScreen() {
     userInfo,
     cart: { cartItems, shippingAddress, paymentMethod },
   } = state;
-  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.456 → 123.46
+  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.456 => 123.46
   const itemsPrice = round2(
     cartItems.reduce((a, c) => a + c.price * c.quantity, 0)
   );
@@ -73,7 +74,7 @@ function PlaceOrderScreen() {
         },
         {
           headers: {
-            autorization: `Bearer ${userInfo.token}`,
+            authorization: `Bearer ${userInfo.token}`,
           },
         }
       );
@@ -92,6 +93,7 @@ function PlaceOrderScreen() {
       <Typography component="h1" variant="h1">
         Place Order
       </Typography>
+
       <Grid container spacing={1}>
         <Grid item md={9} xs={12}>
           <Card sx={classes.section}>
@@ -109,7 +111,7 @@ function PlaceOrderScreen() {
               <ListItem>
                 <Button
                   onClick={() => router.push('/shipping')}
-                  variant="contained"
+                  variant="contianed"
                   color="secondary"
                 >
                   Edit
@@ -128,7 +130,7 @@ function PlaceOrderScreen() {
               <ListItem>
                 <Button
                   onClick={() => router.push('/payment')}
-                  variant="contained"
+                  variant="contianed"
                   color="secondary"
                 >
                   Edit
@@ -145,45 +147,47 @@ function PlaceOrderScreen() {
               </ListItem>
               <ListItem>
                 <TableContainer>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Image</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="right">Quantity</TableCell>
-                      <TableCell align="right">Price</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {cartItems.map((item) => (
-                      <TableRow key={item._key}>
-                        <TableCell>
-                          <NextLink href={`/product/${item.slug}`} passHref>
-                            <Link>
-                              <Image
-                                src={item.image}
-                                alt={item.name}
-                                width={50}
-                                height={50}
-                              ></Image>
-                            </Link>
-                          </NextLink>
-                        </TableCell>
-                        <TableCell>
-                          <NextLink href={`/product/${item.slug}`} passHref>
-                            <Link>
-                              <Typography>{item.name}</Typography>
-                            </Link>
-                          </NextLink>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography>{item.quantity}</Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography>${item.price}</Typography>
-                        </TableCell>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Image</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell align="right">Quantity</TableCell>
+                        <TableCell align="right">Price</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
+                    </TableHead>
+                    <TableBody>
+                      {cartItems.map((item) => (
+                        <TableRow key={item._key}>
+                          <TableCell>
+                            <NextLink href={`/product/${item.slug}`} passHref>
+                              <Link>
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  width={50}
+                                  height={50}
+                                ></Image>
+                              </Link>
+                            </NextLink>
+                          </TableCell>
+                          <TableCell>
+                            <NextLink href={`/product/${item.slug}`} passHref>
+                              <Link>
+                                <Typography>{item.name}</Typography>
+                              </Link>
+                            </NextLink>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography>{item.quantity}</Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography>${item.price}</Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </TableContainer>
               </ListItem>
             </List>
@@ -218,10 +222,14 @@ function PlaceOrderScreen() {
               <ListItem>
                 <Grid container>
                   <Grid item xs={6}>
-                    <strong>Total:</strong>
+                    <Typography>
+                      <strong>Total:</strong>
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <strong>${totalPrice}</strong>
+                    <Typography align="right">
+                      <strong>${totalPrice}</strong>
+                    </Typography>
                   </Grid>
                 </Grid>
               </ListItem>
@@ -248,5 +256,4 @@ function PlaceOrderScreen() {
     </Layout>
   );
 }
-
 export default dynamic(() => Promise.resolve(PlaceOrderScreen), { ssr: false });
