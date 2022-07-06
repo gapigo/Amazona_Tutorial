@@ -49,9 +49,12 @@ function PlaceOrderScreen() {
     if (!paymentMethod) {
       router.push('/payment');
     }
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && !jsCookie.get('placeOrderNotFirstEnter')) {
       router.push('/cart');
     }
+    if (jsCookie.get('placeOrderNotFirstEnter'))
+      jsCookie.remove('placeOrderNotFirstEnter');
+    else jsCookie.set('placeOrderNotFirstEnter', true);
   }, [cartItems, paymentMethod, router]);
 
   const placeOrderHandler = async () => {
